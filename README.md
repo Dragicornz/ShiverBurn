@@ -1,5 +1,5 @@
 # ShiverBurn
-
+![ShiverBurn Logo](logo.png)
 ShiverBurn is a modern, Debian-based operating system built around Python apps and an original user experience. It uses the new `.shiverburn` app format to streamline development and distribution, while offering a bold and intuitive interface inspired by the world of Super Mario Galaxy.
 
 ## Key Features
