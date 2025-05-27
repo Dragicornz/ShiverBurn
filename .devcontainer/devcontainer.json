@@ -1,7 +1,0 @@
-{
-  "name": "ShiverBurn Builder",
-  "image": "debian:bookworm",
-  "postCreateCommand": "apt update && apt install -y live-build xorriso squashfs-tools mtools git curl",
-  "remoteUser": "root",
-  "workspaceFolder": "/workspace"
-}
