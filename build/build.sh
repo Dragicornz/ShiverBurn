@@ -1,27 +1,38 @@
 #!/bin/bash
+set -e
 
-# Paths
-ISO_NAME="shiverburn-custom.iso"
-BASE_ISO="iso/base-debian.iso"
+DEBIAN_ISO="debian-12.5.0-amd64-netinst.iso"
+ISO_URL="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/${DEBIAN_ISO}"
 WORK_DIR="build/tmp"
-OUTPUT_DIR="build/output"
+OUTPUT_ISO="build/output/shiverburn-installer.iso"
 
-# Make dirs
-mkdir -p "$WORK_DIR" "$OUTPUT_DIR"
+mkdir -p build/tmp build/output
 
-# Extract ISO
-xorriso -osirrox on -indev "$BASE_ISO" -extract / "$WORK_DIR"
+# 1) Download the ISO if you don’t already have it locally:
+if [ ! -f "${DEBIAN_ISO}" ]; then
+  echo "Downloading Debian netinst ISO..."
+  wget -c "${ISO_URL}"
+fi
 
-# Copy in preseed + ShiverBurn files
-cp build/preseed.cfg "$WORK_DIR"/preseed.cfg
-cp -r sbapps "$WORK_DIR"/sbapps
-echo "ShiverBurn" > "$WORK_DIR"/.shiverburn-flag
+# 2) Extract ISO contents
+echo "Extracting ISO..."
+xorriso -osirrox on -indev "${DEBIAN_ISO}" -extract / "${WORK_DIR}"
 
-# Add packages (make sure they install during preseed or first boot)
-cp build/shiverburn-packages.txt "$WORK_DIR"/packages.txt
+# 3) Inject your ShiverBurn files:
+echo "Copying ShiverBurn files..."
+cp build/preseed.cfg "${WORK_DIR}"/preseed.cfg
+cp -r sbapps "${WORK_DIR}"/sbapps
+cp build/shiverburn-packages.txt "${WORK_DIR}"/packages.txt
 
-# Rebuild ISO
-xorriso -as mkisofs -r -V "ShiverBurn" \
-  -o "$OUTPUT_DIR/$ISO_NAME" "$WORK_DIR"
+# 4) Rebuild the customized installer ISO
+echo "Rebuilding ISO..."
+xorriso \
+  -as mkisofs \
+  -r -V "ShiverBurn Installer" \
+  -o "${OUTPUT_ISO}" \
+  -c isolinux/boot.cat \
+  -b isolinux/isolinux.bin \
+  -no-emul-boot -boot-load-size 4 -boot-info-table \
+   "${WORK_DIR}"
 
-echo "✅ ISO created: $OUTPUT_DIR/$ISO_NAME"
+echo "✅ Done! Your customized ISO is at ${OUTPUT_ISO}"
