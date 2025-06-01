@@ -1,5 +1,6 @@
 # ShiverBurn
 ![ShiverBurn Logo](logo.png)
+# Website https://sites.google.com/view/shiverburnos/shiverburn-os
 ShiverBurn is a modern, Linux-based (not sure which one at the moment) operating system built around Python apps and an original user experience. It uses the new `.sbapp` and `.sba` app format to streamline development and distribution, while offering a bold and intuitive interface inspired by the world of Super Mario Galaxy.
 
 ## Key Features
